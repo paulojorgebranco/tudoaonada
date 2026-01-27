@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contas do Benfica – Champions | Jornada 8</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background:#0a0a0a; color:#eee; margin:20px; }
+    h1 { margin-bottom:8px; font-size:24px; }
+    h2 { margin-bottom:8px; font-size:18px; margin-top:0; }
+    .card { background:#1c1c1c; padding:16px; border-radius:8px; margin-bottom:16px; }
+    table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
+    th, td { padding:6px 8px; border-bottom:1px solid #333; text-align:left; }
+    th { background:#111; font-weight:600; }
+    .good { color:#4caf50; }
+    .bad { color:#f44336; }
+    .neutral { color:#888; }
+    .tag { padding:2px 6px; border-radius:4px; font-size:12px; white-space:nowrap; }
+    .tag-good { background:#1b5e20; }
+    .tag-bad { background:#b71c1c; }
+    .tag-neutral { background:#333; }
+    input[type="number"] { 
+      width:60px; 
+      padding:6px 8px; 
+      background:#2a2a2a; 
+      color:#fff; 
+      border:2px solid #555; 
+      border-radius:4px;
+      font-size:16px;
+      font-weight:600;
+      text-align:center;
+    }
+    input[type="number"]:focus {
+      outline:none;
+      border-color:#4caf50;
+    }
+    .reset-btn {
+      background:#f44336;
+      color:#fff;
+      border:none;
+      padding:10px 20px;
+      border-radius:6px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      margin-bottom:16px;
+    }
+    .reset-btn:hover {
+      background:#d32f2f;
+    }
+    .small { font-size:13px; color:#aaa; }
+    .highlight-benfica { background:#8b0000; font-weight:600; }
+    .highlight-top8 { background:#1a237e; }
+    .highlight-playoff { background:#1b5e20; }
+    .highlight-out { background:#2a2a2a; }
+    .pos { width:30px; text-align:center; }
+    .pts { width:40px; text-align:center; font-weight:600; }
+    .gd { width:50px; text-align:center; }
+    .top8-line { border-top:3px solid #2196f3; }
+    .playoff-line { border-top:3px solid #4caf50; }
+    .elimination-line { border-top:3px solid #f44336; }
+    .up { color:#4caf50; }
+    .down { color:#f44336; }
+    .same { color:#888; }
+    .score-separator { color:#666; font-weight:600; margin:0 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>⚽ Contas do Benfica – Champions (Jornada 8 • 28 janeiro 2026)</h1>
+
+  <button class="reset-btn" onclick="resetAll()">🔄 Limpar todos os resultados</button>
+
+  <!-- CLASSIFICAÇÃO DINÂMICA COMPLETA -->
+  <div class="card">
+    <h2>📊 Classificação completa em tempo real</h2>
+    <p class="small">Azul = oitavos diretos (1-8), Verde = playoff (9-24), Cinza = eliminado (25-36).</p>
+    <table>
+      <thead>
+        <tr>
+          <th class="pos">#</th>
+          <th>Equipa</th>
+          <th class="pts">Pts</th>
+          <th class="gd">SG</th>
+          <th class="gd">GM</th>
+          <th class="gd">GS</th>
+          <th class="pos">Mov</th>
+        </tr>
+      </thead>
+      <tbody id="standings-body">
+        <!-- preenchido por JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JOGO DO BENFICA -->
+  <div class="card">
+    <h2>🔴 Jogo do Benfica</h2>
+    <p>
+      <strong>Benfica</strong> (casa)
+      <input type="number" id="ben_rmd_home" value="0" min="0" max="9" />
+      <span class="score-separator">–</span>
+      <input type="number" id="ben_rmd_away" value="0" min="0" max="9" />
+      <strong>Real Madrid</strong>
+    </p>
+    <p id="benfica_status"></p>
+  </div>
+
+  <!-- JOGOS RELEVANTES DA JORNADA 8 -->
+  <div class="card">
+    <h2>📋 Jogos relevantes da Jornada 8 (20h00)</h2>
+    <p class="small">Apenas os jogos que afetam diretamente as contas do Benfica.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Jogo</th>
+          <th>Resultado</th>
+          <th>Para o Benfica</th>
+        </tr>
+      </thead>
+      <tbody id="games-body">
+        <!-- preenchido por JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ESTADO GLOBAL -->
+  <div class="card">
+    <h2>✅ Estado global</h2>
+    <p id="global_state"></p>
+    <p id="fav_count_info"></p>
+    <p id="benfica_position_info"></p>
+  </div>
+
+<script>
+  // ===== CLASSIFICAÇÃO COMPLETA (antes da J8) =====
+  const initialStandings = [
+    { team: "Liverpool", pts: 21, gf: 15, ga: 2, pos: 1 },
+    { team: "Barcelona", pts: 18, gf: 26, ga: 11, pos: 2 },
+    { team: "Arsenal", pts: 16, gf: 14, ga: 4, pos: 3 },
+    { team: "Inter", pts: 16, gf: 9, ga: 1, pos: 4 },
+    { team: "Atlético Madrid", pts: 15, gf: 17, ga: 11, pos: 5 },
+    { team: "Real Madrid", pts: 15, gf: 16, ga: 10, pos: 6 },
+    { team: "Leverkusen", pts: 13, gf: 13, ga: 7, pos: 7 },
+    { team: "Lille", pts: 13, gf: 11, ga: 9, pos: 8 },
+    { team: "Aston Villa", pts: 13, gf: 9, ga: 5, pos: 9 },
+    { team: "Atalanta", pts: 13, gf: 14, ga: 4, pos: 10 },
+    { team: "B. Dortmund", pts: 12, gf: 18, ga: 9, pos: 11 },
+    { team: "Bayern", pts: 12, gf: 17, ga: 9, pos: 12 },
+    { team: "Man City", pts: 11, gf: 14, ga: 10, pos: 13 },
+    { team: "Sporting", pts: 11, gf: 13, ga: 7, pos: 14 },
+    { team: "Paris", pts: 10, gf: 9, ga: 6, pos: 15 },
+    { team: "Juventus", pts: 10, gf: 9, ga: 7, pos: 16 },
+    { team: "Frankfurt", pts: 10, gf: 13, ga: 10, pos: 17 },
+    { team: "Chelsea", pts: 10, gf: 15, ga: 11, pos: 18 },
+    { team: "Marseille", pts: 9, gf: 11, ga: 15, pos: 19 },
+    { team: "Monaco", pts: 8, gf: 13, ga: 12, pos: 20 },
+    { team: "PSV", pts: 8, gf: 13, ga: 17, pos: 21 },
+    { team: "Athletic Bilbao", pts: 8, gf: 9, ga: 14, pos: 22 },
+    { team: "Olympiacos", pts: 8, gf: 5, ga: 10, pos: 23 },
+    { team: "Napoli", pts: 7, gf: 7, ga: 13, pos: 24 },
+    { team: "Copenhaga", pts: 7, gf: 8, ga: 13, pos: 25 },
+    { team: "Club Brugge", pts: 7, gf: 10, ga: 12, pos: 26 },
+    { team: "Bodo/Glimt", pts: 6, gf: 10, ga: 14, pos: 27 },
+    { team: "Benfica", pts: 6, gf: 6, ga: 10, pos: 28 },
+    { team: "Pafos", pts: 6, gf: 4, ga: 10, pos: 29 },
+    { team: "Union SG", pts: 6, gf: 5, ga: 15, pos: 30 },
+    { team: "Ajax", pts: 6, gf: 6, ga: 18, pos: 31 },
+    { team: "Slavia Praha", pts: 4, gf: 7, ga: 14, pos: 32 },
+    { team: "Galatasaray", pts: 4, gf: 7, ga: 16, pos: 33 },
+    { team: "Newcastle", pts: 3, gf: 6, ga: 13, pos: 34 },
+    { team: "Qarabağ", pts: 0, gf: 3, ga: 17, pos: 35 },
+  ];
+
+  // Apenas jogos relevantes (que envolvem rivais diretos ou afetam as contas)
+  const relevantGames = [
+    { id: "ben_rmd", home: "Benfica", away: "Real Madrid" },
+    { id: "mon_juv", home: "Monaco", away: "Juventus" },
+    { id: "psv_bay", home: "PSV", away: "Bayern" },
+    { id: "ath_spo", home: "Athletic Bilbao", away: "Sporting" },
+    { id: "aja_oly", home: "Ajax", away: "Olympiacos" },
+    { id: "nap_che", home: "Napoli", away: "Chelsea" },
+    { id: "bar_cop", home: "Barcelona", away: "Copenhaga" },
+    { id: "bru_mar", home: "Club Brugge", away: "Marseille" },
+    { id: "atm_bod", home: "Atlético Madrid", away: "Bodo/Glimt" },
+    { id: "usg_ata", home: "Union SG", away: "Atalanta" },
+    { id: "paf_slp", home: "Pafos", away: "Slavia Praha" },
+  ];
+
+  const RIVALS = ["Bodo/Glimt", "Pafos", "Union SG", "Ajax", "Club Brugge", "Copenhaga", "Napoli", "Olympiacos", "Athletic Bilbao", "PSV", "Monaco", "Marseille"];
+
+  function resetAll() {
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.value = "0";
+    });
+    update();
+  }
+
+  function createRow(game) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${game.home}</strong> vs ${game.away}</td>
+      <td>
+        <input type="number" id="${game.id}_home" value="0" min="0" max="9" />
+        <span class="score-separator">–</span>
+        <input type="number" id="${game.id}_away" value="0" min="0" max="9" />
+      </td>
+      <td id="${game.id}_status"></td>
+    `;
+    return tr;
+  }
+
+  function evaluateMatchImpact(game, h, a) {
+    const home = game.home;
+    const away = game.away;
+
+    if (home === "Benfica") {
+      return h > a ? "favorable" : "bad";
+    }
+    if (away === "Benfica") {
+      return a > h ? "favorable" : "bad";
+    }
+
+    const homeIsRival = RIVALS.includes(home);
+    const awayIsRival = RIVALS.includes(away);
+
+    if (!homeIsRival && !awayIsRival) return "neutral";
+
+    if (homeIsRival && awayIsRival) {
+      if (h === a) return "favorable";
+      const homeData = initialStandings.find(s => s.team === home);
+      const awayData = initialStandings.find(s => s.team === away);
+      if (homeData && awayData) {
+        if (homeData.pos > 28 && h > a) return "favorable";
+        if (awayData.pos > 28 && a > h) return "favorable";
+        return "bad";
+      }
+      return "neutral";
+    }
+
+    if (homeIsRival) {
+      if (a > h) return "favorable";
+      if (a === h) return "neutral";
+      return "bad";
+    }
+
+    if (awayIsRival) {
+      if (h > a) return "favorable";
+      if (h === a) return "neutral";
+      return "bad";
+    }
+
+    return "neutral";
+  }
+
+  function getMatchResult(teamName) {
+    for (let game of relevantGames) {
+      let hGoals = parseInt(document.getElementById(`${game.id}_home`)?.value || "0", 10);
+      let aGoals = parseInt(document.getElementById(`${game.id}_away`)?.value || "0", 10);
+
+      if (game.home === teamName) {
+        const pts = hGoals > aGoals ? 3 : (hGoals === aGoals ? 1 : 0);
+        return [hGoals, aGoals, pts];
+      }
+      if (game.away === teamName) {
+        const pts = aGoals > hGoals ? 3 : (aGoals === hGoals ? 1 : 0);
+        return [aGoals, hGoals, pts];
+      }
+    }
+    return [0, 0, 0];
+  }
+
+  function updateStandings() {
+    const standings = initialStandings.map(s => {
+      const [gf_add, ga_add, pts_add] = getMatchResult(s.team);
+      return {
+        team: s.team,
+        pts: s.pts + pts_add,
+        gf: s.gf + gf_add,
+        ga: s.ga + ga_add,
+        gd: (s.gf + gf_add) - (s.ga + ga_add),
+        initialPos: s.pos,
+      };
+    });
+
+    standings.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.gd !== a.gd) return b.gd - a.gd;
+      return b.gf - a.gf;
+    });
+
+    const tbody = document.getElementById("standings-body");
+    tbody.innerHTML = "";
+
+    standings.forEach((s, idx) => {
+      const newPos = idx + 1;
+      const tr = document.createElement("tr");
+
+      let rowClass = "";
+      if (s.team === "Benfica") {
+        rowClass = "highlight-benfica";
+      } else if (newPos <= 8) {
+        rowClass = "highlight-top8";
+      } else if (newPos <= 24) {
+        rowClass = "highlight-playoff";
+      } else {
+        rowClass = "highlight-out";
+      }
+
+      let borderClass = "";
+      if (newPos === 8) borderClass = "top8-line";
+      if (newPos === 24) borderClass = "playoff-line";
+      if (newPos === 25) borderClass = "elimination-line";
+
+      const movement = s.initialPos - newPos;
+      let movIcon = "–";
+      let movClass = "same";
+      if (movement > 0) {
+        movIcon = `↑${movement}`;
+        movClass = "up";
+      } else if (movement < 0) {
+        movIcon = `↓${Math.abs(movement)}`;
+        movClass = "down";
+      }
+
+      tr.className = `${rowClass} ${borderClass}`;
+      tr.innerHTML = `
+        <td class="pos">${newPos}</td>
+        <td><strong>${s.team}</strong></td>
+        <td class="pts">${s.pts}</td>
+        <td class="gd">${s.gd > 0 ? '+' : ''}${s.gd}</td>
+        <td class="gd">${s.gf}</td>
+        <td class="gd">${s.ga}</td>
+        <td class="pos ${movClass}">${movIcon}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    return standings;
+  }
+
+  function update() {
+    const benficaG = parseInt(document.getElementById("ben_rmd_home").value || "0", 10);
+    const realG = parseInt(document.getElementById("ben_rmd_away").value || "0", 10);
+
+    const benficaStatusEl = document.getElementById("benfica_status");
+    if (benficaG > realG) {
+      benficaStatusEl.innerHTML = `<span class="good">✅ Benfica está a cumprir (vitória obrigatória).</span>`;
+    } else if (benficaG === realG) {
+      benficaStatusEl.innerHTML = `<span class="bad">❌ Empate não serve – é preciso ganhar.</span>`;
+    } else {
+      benficaStatusEl.innerHTML = `<span class="bad">❌ Derrota – neste cenário, está fora.</span>`;
+    }
+
+    let favorableCount = 0;
+    let badCount = 0;
+
+    relevantGames.forEach(game => {
+      const h = parseInt(document.getElementById(`${game.id}_home`).value || "0", 10);
+      const a = parseInt(document.getElementById(`${game.id}_away`).value || "0", 10);
+      const impact = evaluateMatchImpact(game, h, a);
+      const cell = document.getElementById(`${game.id}_status`);
+      if (!cell) return;
+      
+      if (impact === "favorable") {
+        cell.innerHTML = `<span class="tag tag-good">Favorável ✅</span>`;
+        favorableCount++;
+      } else if (impact === "bad") {
+        cell.innerHTML = `<span class="tag tag-bad">Mau ❌</span>`;
+        badCount++;
+      } else {
+        cell.innerHTML = `<span class="tag tag-neutral">Neutro –</span>`;
+      }
+    });
+
+    const standings = updateStandings();
+    const benficaData = standings.find(s => s.team === "Benfica");
+    const benficaPos = standings.indexOf(benficaData) + 1;
+
+    const inside = benficaPos <= 24 && benficaG > realG;
+
+    const globalStateEl = document.getElementById("global_state");
+    const favInfoEl = document.getElementById("fav_count_info");
+    const posInfoEl = document.getElementById("benfica_position_info");
+
+    if (!(benficaG > realG)) {
+      globalStateEl.innerHTML = `<span class="bad">❌ Neste momento: FORA (Benfica não está a ganhar).</span>`;
+    } else if (inside) {
+      globalStateEl.innerHTML = `<span class="good">✅ Neste momento: DENTRO (playoff) – Benfica em ${benficaPos}º lugar!</span>`;
+    } else {
+      globalStateEl.innerHTML = `<span class="bad">❌ Neste momento: FORA – Benfica em ${benficaPos}º lugar (precisa do 24º ou melhor).</span>`;
+    }
+
+    favInfoEl.textContent = `Resultados favoráveis: ${favorableCount} | Maus: ${badCount} | Neutros: ${relevantGames.length - favorableCount - badCount}`;
+    posInfoEl.innerHTML = `<strong>Posição do Benfica:</strong> ${benficaPos}º | <strong>Pontos:</strong> ${benficaData.pts} | <strong>Saldo:</strong> ${benficaData.gd > 0 ? '+' : ''}${benficaData.gd}`;
+  }
+
+  const tbody = document.getElementById("games-body");
+  relevantGames.forEach(g => {
+    if (g.home !== "Benfica") {
+      const row = createRow(g);
+      tbody.appendChild(row);
+    }
+  });
+
+  document.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("input", update);
+  });
+
+  update();
+</script>
+
+</body>
+</html>
