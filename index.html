@@ -2,138 +2,386 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contas do Benfica – Champions | Jornada 8</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background:#0a0a0a; color:#eee; margin:20px; }
-    h1 { margin-bottom:8px; font-size:24px; }
-    h2 { margin-bottom:8px; font-size:18px; margin-top:0; }
-    .card { background:#1c1c1c; padding:16px; border-radius:8px; margin-bottom:16px; }
-    table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
-    th, td { padding:6px 8px; border-bottom:1px solid #333; text-align:left; }
-    th { background:#111; font-weight:600; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color:#eee; 
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    h1 { 
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+    
+    h2 { 
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card { 
+      background: linear-gradient(135deg, rgba(30,30,46,0.95) 0%, rgba(22,22,36,0.95) 100%);
+      backdrop-filter: blur(10px);
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 12px; 
+      font-size: 14px;
+    }
+    
+    th, td { 
+      padding: 12px 12px; 
+      border-bottom: 1px solid rgba(255,255,255,0.05); 
+      text-align: left;
+    }
+    
+    th { 
+      background: rgba(0,0,0,0.3);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+    
+    tbody tr:hover {
+      background: rgba(255,255,255,0.03);
+    }
+    
     .good { color:#4caf50; }
     .bad { color:#f44336; }
     .neutral { color:#888; }
-    .tag { padding:2px 6px; border-radius:4px; font-size:12px; white-space:nowrap; }
-    .tag-good { background:#1b5e20; }
-    .tag-bad { background:#b71c1c; }
-    .tag-neutral { background:#333; }
+    
+    .tag { 
+      padding: 4px 10px; 
+      border-radius: 6px; 
+      font-size: 12px; 
+      white-space: nowrap;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .tag-good { 
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+      box-shadow: 0 2px 8px rgba(76,175,80,0.3);
+    }
+    .tag-bad { 
+      background: linear-gradient(135deg, #b71c1c 0%, #c62828 100%);
+      box-shadow: 0 2px 8px rgba(244,67,54,0.3);
+    }
+    .tag-neutral { 
+      background: rgba(255,255,255,0.1);
+      color: #999;
+    }
+    
     input[type="number"] { 
-      width:60px; 
-      padding:6px 8px; 
-      background:#2a2a2a; 
-      color:#fff; 
-      border:2px solid #555; 
-      border-radius:4px;
-      font-size:16px;
-      font-weight:600;
-      text-align:center;
+      width: 65px; 
+      padding: 8px 12px; 
+      background: linear-gradient(135deg, #2a2a3e 0%, #1f1f2e 100%);
+      color: #fff; 
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s ease;
     }
+    
+    input[type="number"]:hover {
+      border-color: rgba(255,255,255,0.2);
+    }
+    
     input[type="number"]:focus {
-      outline:none;
-      border-color:#4caf50;
+      outline: none;
+      border-color: #4caf50;
+      box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+      transform: scale(1.05);
     }
+    
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 1;
+      height: 40px;
+    }
+    
     .reset-btn {
-      background:#f44336;
-      color:#fff;
-      border:none;
-      padding:10px 20px;
-      border-radius:6px;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
-      margin-bottom:16px;
+      background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto 24px;
+      box-shadow: 0 4px 16px rgba(244,67,54,0.4);
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
     }
+    
     .reset-btn:hover {
-      background:#d32f2f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(244,67,54,0.5);
+      background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
     }
-    .small { font-size:13px; color:#aaa; }
-    .highlight-benfica { background:#8b0000; font-weight:600; }
-    .highlight-top8 { background:#1a237e; }
-    .highlight-playoff { background:#1b5e20; }
-    .highlight-out { background:#2a2a2a; }
-    .pos { width:30px; text-align:center; }
-    .pts { width:40px; text-align:center; font-weight:600; }
-    .gd { width:50px; text-align:center; }
-    .top8-line { border-top:3px solid #2196f3; }
-    .playoff-line { border-top:3px solid #4caf50; }
-    .elimination-line { border-top:3px solid #f44336; }
-    .up { color:#4caf50; }
-    .down { color:#f44336; }
-    .same { color:#888; }
-    .score-separator { color:#666; font-weight:600; margin:0 4px; }
+    
+    .reset-btn:active {
+      transform: translateY(0);
+    }
+    
+    .small { 
+      font-size: 13px; 
+      color: #999;
+      margin-bottom: 12px;
+    }
+    
+    .highlight-benfica { 
+      background: linear-gradient(90deg, rgba(139,0,0,0.4) 0%, rgba(139,0,0,0.2) 100%);
+      font-weight: 700;
+      border-left: 4px solid #c62828;
+    }
+    
+    .highlight-top8 { 
+      background: linear-gradient(90deg, rgba(26,35,126,0.3) 0%, rgba(26,35,126,0.1) 100%);
+      border-left: 4px solid #2196f3;
+    }
+    
+    .highlight-playoff { 
+      background: linear-gradient(90deg, rgba(27,94,32,0.3) 0%, rgba(27,94,32,0.1) 100%);
+      border-left: 4px solid #4caf50;
+    }
+    
+    .highlight-out { 
+      background: rgba(42,42,42,0.2);
+      opacity: 0.7;
+    }
+    
+    .pos { width: 40px; text-align: center; font-weight: 700; color: #999; }
+    .pts { width: 50px; text-align: center; font-weight: 700; font-size: 16px; }
+    .gd { width: 60px; text-align: center; font-weight: 600; }
+    
+    .top8-line { border-top: 2px solid rgba(33,150,243,0.5); }
+    .playoff-line { border-top: 2px solid rgba(76,175,80,0.5); }
+    .elimination-line { border-top: 2px solid rgba(244,67,54,0.5); }
+    
+    .up { 
+      color: #4caf50; 
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(76,175,80,0.5);
+    }
+    .down { 
+      color: #f44336; 
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(244,67,54,0.5);
+    }
+    .same { color: #666; }
+    
+    .score-separator { 
+      color: #666; 
+      font-weight: 700; 
+      margin: 0 6px;
+      font-size: 20px;
+    }
+    
+    .benfica-card {
+      background: linear-gradient(135deg, rgba(139,0,0,0.2) 0%, rgba(80,0,0,0.3) 100%);
+      border: 2px solid rgba(198,40,40,0.3);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    
+    .status-good {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+    }
+    
+    .status-bad {
+      background: linear-gradient(135deg, #b71c1c 0%, #c62828 100%);
+      box-shadow: 0 4px 12px rgba(244,67,54,0.3);
+    }
+    
+    .global-status {
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-inside {
+      background: linear-gradient(135deg, rgba(27,94,32,0.3) 0%, rgba(46,125,50,0.3) 100%);
+      border: 2px solid rgba(76,175,80,0.5);
+      color: #4caf50;
+      text-shadow: 0 0 20px rgba(76,175,80,0.3);
+    }
+    
+    .status-outside {
+      background: linear-gradient(135deg, rgba(183,28,28,0.3) 0%, rgba(198,40,40,0.3) 100%);
+      border: 2px solid rgba(244,67,54,0.5);
+      color: #f44336;
+      text-shadow: 0 0 20px rgba(244,67,54,0.3);
+    }
+    
+    .info-text {
+      font-size: 14px;
+      color: #bbb;
+      margin: 8px 0;
+    }
+    
+    .match-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 24px; }
+      .card { padding: 16px; }
+      input[type="number"] { width: 55px; font-size: 16px; padding: 6px 8px; }
+    }
   </style>
 </head>
 <body>
 
-  <h1>⚽ Contas do Benfica – Champions (Jornada 8 • 28 janeiro 2026)</h1>
+  <div class="container">
+    <h1>⚽ Contas do Benfica – Champions League</h1>
+    
+    <button class="reset-btn" onclick="resetAll()">🔄 Limpar Resultados</button>
 
-  <button class="reset-btn" onclick="resetAll()">🔄 Limpar todos os resultados</button>
+    <!-- CLASSIFICAÇÃO DINÂMICA COMPLETA -->
+    <div class="card">
+      <h2>📊 Classificação em Tempo Real</h2>
+      <p class="small">🔵 Oitavos diretos (1-8) • 🟢 Playoff (9-24) • ⚫ Eliminado (25-36)</p>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th class="pos">#</th>
+              <th>Equipa</th>
+              <th class="pts">Pts</th>
+              <th class="gd">SG</th>
+              <th class="gd">GM</th>
+              <th class="gd">GS</th>
+              <th class="pos">Mov</th>
+            </tr>
+          </thead>
+          <tbody id="standings-body">
+            <!-- preenchido por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <!-- CLASSIFICAÇÃO DINÂMICA COMPLETA -->
-  <div class="card">
-    <h2>📊 Classificação completa em tempo real</h2>
-    <p class="small">Azul = oitavos diretos (1-8), Verde = playoff (9-24), Cinza = eliminado (25-36).</p>
-    <table>
-      <thead>
-        <tr>
-          <th class="pos">#</th>
-          <th>Equipa</th>
-          <th class="pts">Pts</th>
-          <th class="gd">SG</th>
-          <th class="gd">GM</th>
-          <th class="gd">GS</th>
-          <th class="pos">Mov</th>
-        </tr>
-      </thead>
-      <tbody id="standings-body">
-        <!-- preenchido por JS -->
-      </tbody>
-    </table>
-  </div>
+    <!-- JOGO DO BENFICA -->
+    <div class="card benfica-card">
+      <h2>🔴 Jogo do Benfica</h2>
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
+        <strong style="font-size: 16px;">Benfica</strong>
+        <input type="number" id="ben_rmd_home" value="0" min="0" max="9" />
+        <span class="score-separator">–</span>
+        <input type="number" id="ben_rmd_away" value="0" min="0" max="9" />
+        <strong style="font-size: 16px;">Real Madrid</strong>
+      </div>
+      <div id="benfica_status"></div>
+    </div>
 
-  <!-- JOGO DO BENFICA -->
-  <div class="card">
-    <h2>🔴 Jogo do Benfica</h2>
-    <p>
-      <strong>Benfica</strong> (casa)
-      <input type="number" id="ben_rmd_home" value="0" min="0" max="9" />
-      <span class="score-separator">–</span>
-      <input type="number" id="ben_rmd_away" value="0" min="0" max="9" />
-      <strong>Real Madrid</strong>
-    </p>
-    <p id="benfica_status"></p>
-  </div>
+    <!-- JOGOS RELEVANTES DA JORNADA 8 -->
+    <div class="card">
+      <h2>📋 Jogos Relevantes da Jornada 8</h2>
+      <p class="small">Apenas os jogos que afetam diretamente as contas do Benfica • Todos às 20h00</p>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Jogo</th>
+              <th style="text-align: center;">Resultado</th>
+              <th>Impacto</th>
+            </tr>
+          </thead>
+          <tbody id="games-body">
+            <!-- preenchido por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <!-- JOGOS RELEVANTES DA JORNADA 8 -->
-  <div class="card">
-    <h2>📋 Jogos relevantes da Jornada 8 (20h00)</h2>
-    <p class="small">Apenas os jogos que afetam diretamente as contas do Benfica.</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Jogo</th>
-          <th>Resultado</th>
-          <th>Para o Benfica</th>
-        </tr>
-      </thead>
-      <tbody id="games-body">
-        <!-- preenchido por JS -->
-      </tbody>
-    </table>
-  </div>
-
-  <!-- ESTADO GLOBAL -->
-  <div class="card">
-    <h2>✅ Estado global</h2>
-    <p id="global_state"></p>
-    <p id="fav_count_info"></p>
-    <p id="benfica_position_info"></p>
+    <!-- ESTADO GLOBAL -->
+    <div class="card">
+      <h2>✅ Estado Global</h2>
+      <div id="global_state"></div>
+      <p class="info-text" id="fav_count_info"></p>
+      <p class="info-text" id="benfica_position_info"></p>
+    </div>
   </div>
 
 <script>
-  // ===== CLASSIFICAÇÃO COMPLETA (antes da J8) =====
   const initialStandings = [
     { team: "Liverpool", pts: 21, gf: 15, ga: 2, pos: 1 },
     { team: "Barcelona", pts: 18, gf: 26, ga: 11, pos: 2 },
@@ -172,7 +420,6 @@
     { team: "Qarabağ", pts: 0, gf: 3, ga: 17, pos: 35 },
   ];
 
-  // Apenas jogos relevantes (que envolvem rivais diretos ou afetam as contas)
   const relevantGames = [
     { id: "ben_rmd", home: "Benfica", away: "Real Madrid" },
     { id: "mon_juv", home: "Monaco", away: "Juventus" },
@@ -200,10 +447,12 @@
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><strong>${game.home}</strong> vs ${game.away}</td>
-      <td>
-        <input type="number" id="${game.id}_home" value="0" min="0" max="9" />
-        <span class="score-separator">–</span>
-        <input type="number" id="${game.id}_away" value="0" min="0" max="9" />
+      <td style="text-align: center;">
+        <div class="match-row" style="justify-content: center;">
+          <input type="number" id="${game.id}_home" value="0" min="0" max="9" />
+          <span class="score-separator">–</span>
+          <input type="number" id="${game.id}_away" value="0" min="0" max="9" />
+        </div>
       </td>
       <td id="${game.id}_status"></td>
     `;
@@ -214,12 +463,8 @@
     const home = game.home;
     const away = game.away;
 
-    if (home === "Benfica") {
-      return h > a ? "favorable" : "bad";
-    }
-    if (away === "Benfica") {
-      return a > h ? "favorable" : "bad";
-    }
+    if (home === "Benfica") return h > a ? "favorable" : "bad";
+    if (away === "Benfica") return a > h ? "favorable" : "bad";
 
     const homeIsRival = RIVALS.includes(home);
     const awayIsRival = RIVALS.includes(away);
@@ -345,11 +590,11 @@
 
     const benficaStatusEl = document.getElementById("benfica_status");
     if (benficaG > realG) {
-      benficaStatusEl.innerHTML = `<span class="good">✅ Benfica está a cumprir (vitória obrigatória).</span>`;
+      benficaStatusEl.innerHTML = `<div class="status-badge status-good">✅ Benfica está a cumprir (vitória obrigatória)</div>`;
     } else if (benficaG === realG) {
-      benficaStatusEl.innerHTML = `<span class="bad">❌ Empate não serve – é preciso ganhar.</span>`;
+      benficaStatusEl.innerHTML = `<div class="status-badge status-bad">❌ Empate não serve – é preciso ganhar</div>`;
     } else {
-      benficaStatusEl.innerHTML = `<span class="bad">❌ Derrota – neste cenário, está fora.</span>`;
+      benficaStatusEl.innerHTML = `<div class="status-badge status-bad">❌ Derrota – neste cenário, está fora</div>`;
     }
 
     let favorableCount = 0;
@@ -384,15 +629,15 @@
     const posInfoEl = document.getElementById("benfica_position_info");
 
     if (!(benficaG > realG)) {
-      globalStateEl.innerHTML = `<span class="bad">❌ Neste momento: FORA (Benfica não está a ganhar).</span>`;
+      globalStateEl.innerHTML = `<div class="global-status status-outside">❌ FORA — Benfica não está a ganhar</div>`;
     } else if (inside) {
-      globalStateEl.innerHTML = `<span class="good">✅ Neste momento: DENTRO (playoff) – Benfica em ${benficaPos}º lugar!</span>`;
+      globalStateEl.innerHTML = `<div class="global-status status-inside">✅ DENTRO DO PLAYOFF — ${benficaPos}º lugar!</div>`;
     } else {
-      globalStateEl.innerHTML = `<span class="bad">❌ Neste momento: FORA – Benfica em ${benficaPos}º lugar (precisa do 24º ou melhor).</span>`;
+      globalStateEl.innerHTML = `<div class="global-status status-outside">❌ FORA — ${benficaPos}º lugar (precisa do 24º ou melhor)</div>`;
     }
 
-    favInfoEl.textContent = `Resultados favoráveis: ${favorableCount} | Maus: ${badCount} | Neutros: ${relevantGames.length - favorableCount - badCount}`;
-    posInfoEl.innerHTML = `<strong>Posição do Benfica:</strong> ${benficaPos}º | <strong>Pontos:</strong> ${benficaData.pts} | <strong>Saldo:</strong> ${benficaData.gd > 0 ? '+' : ''}${benficaData.gd}`;
+    favInfoEl.innerHTML = `<strong>Resultados:</strong> ${favorableCount} favoráveis • ${badCount} maus • ${relevantGames.length - favorableCount - badCount} neutros`;
+    posInfoEl.innerHTML = `<strong>Benfica:</strong> ${benficaPos}º lugar • ${benficaData.pts} pontos • Saldo ${benficaData.gd > 0 ? '+' : ''}${benficaData.gd}`;
   }
 
   const tbody = document.getElementById("games-body");
