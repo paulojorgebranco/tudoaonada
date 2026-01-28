@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contas do Benfica – Champions | Jornada 8</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -41,14 +40,9 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
 
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-    }
+    .small{ font-size: 13px; color: #a6a6b3; margin-top: 8px; }
 
+    /* Botões */
     .btn{
       background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
       color:#fff;
@@ -59,6 +53,7 @@
       font-weight:800;
       cursor:pointer;
       box-shadow: 0 4px 16px rgba(244,67,54,0.35);
+      line-height: 1;
     }
 
     .btn.secondary{
@@ -67,8 +62,31 @@
       border: 1px solid rgba(255,255,255,0.14);
     }
 
-    .small{ font-size: 13px; color: #a6a6b3; margin-top: 8px; }
+    /* Botões pequenos (pedido) */
+    .btn.sm{
+      padding: 9px 12px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: none;
+    }
 
+    /* Toolbar: botões ao lado de "Limpar resultados" */
+    .toolbar{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar .btn{ white-space: nowrap; }
+
+    @media (max-width: 520px){
+      .toolbar .btn{ flex: 1; }
+    }
+
+    /* Tabelas */
+    .table-wrap{ overflow-x:auto; }
     table{ width:100%; border-collapse:collapse; font-size:14px; }
     th, td{ padding:10px 10px; border-bottom:1px solid rgba(255,255,255,0.06); text-align:left; }
     th{
@@ -90,8 +108,8 @@
     .zone-top8{ border-left:4px solid #2196f3; background: rgba(33,150,243,0.08); }
     .zone-playoff{ border-left:4px solid #4caf50; background: rgba(76,175,80,0.07); }
     .zone-out{ border-left:4px solid #777; background: rgba(255,255,255,0.03); opacity: 0.92; }
-
     .benfica{ border-left:4px solid #c62828 !important; background: rgba(198,40,40,0.12) !important; }
+
     .mov-up{ color:#4caf50; font-weight:900; }
     .mov-down{ color:#f44336; font-weight:900; }
     .mov-same{ color:#8c8c8c; }
@@ -130,16 +148,7 @@
     .pill.green{ border-color: rgba(76,175,80,0.45); background: rgba(76,175,80,0.10); }
     .pill.gray{ border-color: rgba(200,200,200,0.25); background: rgba(200,200,200,0.06); }
 
-    .table-wrap{ overflow-x:auto; }
-
-    .scoreline{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      padding:10px 0 2px;
-    }
-
+    /* Inputs */
     input[type="number"]{
       width: 64px;
       padding: 8px 10px;
@@ -159,7 +168,6 @@
       box-shadow: 0 0 0 3px rgba(76,175,80,0.18);
       transform: scale(1.03);
     }
-
     .sep{ color:#777; font-weight:900; font-size:18px; }
 
     .impact{ font-weight:900; }
@@ -167,15 +175,28 @@
     .impact .bad{ color:#f44336; }
     .impact .neutral{ color:#9a9aa6; }
 
-    /* ===========================
-       BOLHA FLUTUANTE (FIXA)
-       =========================== */
+    /* Chips */
+    .chip{
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 900;
+      display:inline-block;
+    }
+    .chip.good{ border-color: rgba(76,175,80,0.35); background: rgba(76,175,80,0.10); color: #b8ffd0; }
+    .chip.bad{ border-color: rgba(244,67,54,0.35); background: rgba(244,67,54,0.10); color: #ffd0cb; }
+
+    /* Bolha flutuante */
     .floating-bubble{
       position: fixed;
       right: 16px;
       top: 16px;
       z-index: 9999;
-      width: min(360px, calc(100vw - 32px));
+      width: min(400px, calc(100vw - 32px));
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.14);
       background: rgba(20, 20, 34, 0.62);
@@ -206,7 +227,6 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      box-shadow: 0 0 18px rgba(255,255,255,0.18);
     }
     .dot.inside{ background: #4caf50; box-shadow: 0 0 22px rgba(76,175,80,0.45); }
     .dot.outside{ background: #f44336; box-shadow: 0 0 22px rgba(244,67,54,0.45); }
@@ -228,78 +248,82 @@
       gap: 10px;
     }
 
-    .benfica-line{
+    .benfica-box{
       border-radius: 14px;
       border: 1px solid rgba(198,40,40,0.35);
       background: rgba(198,40,40,0.12);
       padding: 10px 12px;
     }
 
-    .benfica-line .title{
+    .benfica-box .title{
       font-weight: 900;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
     }
 
-    .benfica-line .meta{
-      color: #d7d7e0;
-      font-size: 13px;
-      font-weight: 700;
+    .score-mini{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .benfica-meta{
       display:flex;
       flex-wrap:wrap;
-      gap: 8px 12px;
+      gap: 8px 10px;
+      margin-top: 10px;
     }
-
-    .chip{
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-    .chip.good{ border-color: rgba(76,175,80,0.35); background: rgba(76,175,80,0.10); color: #b8ffd0; }
-    .chip.bad{ border-color: rgba(244,67,54,0.35); background: rgba(244,67,54,0.10); color: #ffd0cb; }
 
     .floating-bubble.minimized .body{ display: none; }
 
-    .floating-bubble{
-      animation: floaty 4.2s ease-in-out infinite;
-    }
-
-    @keyframes floaty{
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(6px); }
-    }
-
     @media (max-width: 720px){
       .floating-bubble{ right: 10px; top: 10px; }
+      h1{ font-size: 24px; }
+      th, td{ padding: 9px 8px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- BOLHA FLUTUANTE -->
+  <!-- Bolha: resultado Benfica fica aqui -->
   <div id="floatingBubble" class="floating-bubble" aria-live="polite">
     <div class="head">
-      <div class="status" id="bubbleStatus">
+      <div class="status">
         <span class="dot outside" id="bubbleDot"></span>
         <span id="bubbleText">Fora</span>
       </div>
       <button class="toggle" id="bubbleToggle" title="Minimizar/Expandir">–</button>
     </div>
+
     <div class="body">
-      <div class="benfica-line" id="bubbleBenficaLine">
-        <div class="title">Benfica</div>
-        <div class="meta" id="bubbleBenficaMeta">
+      <div class="benfica-box">
+        <div class="title">
+          <span>🔴 Benfica vs Real Madrid</span>
+          <span id="bubbleMatchBadge" class="chip bad">Não vence</span>
+        </div>
+
+        <div class="score-mini">
+          <strong>BEN</strong>
+          <input type="number" id="ben_rmd_home" value="0" min="0" max="9" />
+          <span class="sep">–</span>
+          <input type="number" id="ben_rmd_away" value="0" min="0" max="9" />
+          <strong>RMA</strong>
+        </div>
+
+        <div class="small" id="benfica_status" style="margin-top:10px;"></div>
+
+        <div class="benfica-meta" id="bubbleBenficaMeta">
           <span class="chip">Pos: —</span>
           <span class="chip">Pts: —</span>
           <span class="chip">SG: —</span>
           <span class="chip">GM/GS: —</span>
         </div>
-      </div>
-      <div class="small" id="bubbleHint">
-        Mantém isto aberto para veres sempre a posição do Benfica enquanto fazes scroll.
       </div>
     </div>
   </div>
@@ -308,43 +332,17 @@
     <h1>Contas do Benfica – Champions League (Jornada 8)</h1>
 
     <div class="card">
-      <div class="row">
-        <button class="btn" onclick="resetAll()">Limpar resultados</button>
-        <div class="row">
-          <button class="btn secondary" onclick="setAllZones(true)">Expandir tudo</button>
-          <button class="btn secondary" onclick="setAllZones(false)">Colapsar tudo</button>
-        </div>
+      <div class="toolbar">
+        <button class="btn sm" onclick="resetAll()">Limpar resultados</button>
+        <button class="btn secondary sm" onclick="setAllZones(true)">Expandir tudo</button>
+        <button class="btn secondary sm" onclick="setAllZones(false)">Colapsar tudo</button>
       </div>
-      <div class="small">Podes colapsar/expandir por zonas (Top 8, Playoff, Eliminados). [page:1]</div>
+      <div class="small">Base: tabela oficial após a Jornada 7; simulação altera Pts/GM/GS/SG e reordena. [page:1]</div>
     </div>
 
     <div class="card">
-      <div class="row">
-        <div>
-          <div style="font-weight: 900; font-size: 18px;">🔴 Benfica vs Real Madrid</div>
-          <div class="small">Ajusta os golos e a tabela recalcula Pts/GM/GS/SG e posições. [page:1]</div>
-        </div>
-
-        <div class="scoreline">
-          <strong>Benfica</strong>
-          <input type="number" id="ben_rmd_home" value="0" min="0" max="9" />
-          <span class="sep">–</span>
-          <input type="number" id="ben_rmd_away" value="0" min="0" max="9" />
-          <strong>Real Madrid</strong>
-        </div>
-      </div>
-
-      <div id="benfica_status" style="margin-top: 10px;"></div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <div>
-          <div style="font-weight: 900; font-size: 18px;">📊 Classificação (1–36)</div>
-          <div class="small">Ordem: Pontos → Saldo (SG) → Golos marcados (GM). [page:1]</div>
-        </div>
-        <div id="global_state"></div>
-      </div>
+      <div style="font-weight: 900; font-size: 18px;">📊 Classificação (1–36)</div>
+      <div class="small">Ordem: Pontos → SG → GM. [page:1]</div>
 
       <div class="details">
         <details id="zone_top8" open>
@@ -406,7 +404,7 @@
 
     <div class="card">
       <div style="font-weight: 900; font-size: 18px;">📋 Jogos relevantes (Jornada 8)</div>
-      <div class="small">Marcados como Favorável/Mau/Neutro para o Benfica (heurística simples). [page:1]</div>
+      <div class="small">Favorável/Mau/Neutro é uma heurística simples. [page:1]</div>
 
       <div class="table-wrap" style="margin-top: 10px;">
         <table>
@@ -423,7 +421,7 @@
   </div>
 
 <script>
-  // Classificação oficial após Jornada 7 [page:1]
+  // Base oficial após Jornada 7 (UEFA) [page:1]
   const initialStandings = [
     { team:"Arsenal",        p:7,w:7,d:0,l:0,gf:20,ga:2,  pts:21, pos:1 },
     { team:"Bayern München", p:7,w:6,d:0,l:1,gf:20,ga:7,  pts:18, pos:2 },
@@ -627,15 +625,18 @@
     render(out, "tbody_out");
   }
 
-  function updateFloatingBubble({inside, benPos, benPts, benGd, benGf, benGa}){
-    const bubble = document.getElementById("floatingBubble");
+  function updateBubble({inside, benPos, benPts, benGd, benGf, benGa, benficaWinsMatch}){
     const dot = document.getElementById("bubbleDot");
     const text = document.getElementById("bubbleText");
+    const matchBadge = document.getElementById("bubbleMatchBadge");
 
     dot.classList.toggle("inside", inside);
     dot.classList.toggle("outside", !inside);
-
     text.textContent = inside ? `Dentro (Playoff) • ${benPos}º` : `Fora • ${benPos}º`;
+
+    matchBadge.classList.toggle("good", benficaWinsMatch);
+    matchBadge.classList.toggle("bad", !benficaWinsMatch);
+    matchBadge.textContent = benficaWinsMatch ? "Vence" : "Não vence";
 
     const meta = document.getElementById("bubbleBenficaMeta");
     meta.innerHTML = `
@@ -647,14 +648,14 @@
   }
 
   function update(){
-    // status Benfica (condição base para entrar no cenário)
     const [bH, bA] = getMatchScore("ben_rmd");
+    const benficaWinsMatch = bH > bA;
+
     const benficaStatusEl = document.getElementById("benfica_status");
-    benficaStatusEl.innerHTML = (bH > bA)
+    benficaStatusEl.innerHTML = benficaWinsMatch
       ? `<span class="chip good">✅ Benfica está a ganhar</span>`
       : `<span class="chip bad">❌ Benfica não está a ganhar</span>`;
 
-    // Impactos
     let favorable = 0, bad = 0, neutral = 0;
     for (const g of relevantGames){
       const [h,a] = getMatchScore(g.id);
@@ -666,40 +667,31 @@
       else if (impact === "bad"){ bad++; cell.innerHTML = `<span class="bad">Mau ❌</span>`; }
       else { neutral++; cell.innerHTML = `<span class="neutral">Neutro –</span>`; }
     }
-
     document.getElementById("fav_count_info").textContent =
       `Impacto (heurístico): ${favorable} favoráveis • ${bad} maus • ${neutral} neutros`;
 
-    // Standings
     const standings = computeStandings();
     renderZones(standings);
 
     const ben = standings.find(t => t.team === "Benfica");
     const benPos = ben.realPos;
+    const inside = benficaWinsMatch && (benPos <= 24);
 
     document.getElementById("benfica_position_info").textContent =
       `Benfica: ${benPos}º • ${ben.pts} pts • SG ${ben.gd > 0 ? "+" : ""}${ben.gd} • GM/GS ${ben.gf}-${ben.ga}`;
 
-    const inside = (bH > bA) && (benPos <= 24);
-
-    // estado global (na página)
-    const global = document.getElementById("global_state");
-    if (bH <= bA) global.innerHTML = `<span class="chip bad">Fora (não vence)</span>`;
-    else if (benPos <= 24) global.innerHTML = `<span class="chip good">Dentro (Playoff)</span>`;
-    else global.innerHTML = `<span class="chip bad">Fora</span>`;
-
-    // bolha flutuante (sempre visível)
-    updateFloatingBubble({
+    updateBubble({
       inside,
       benPos,
       benPts: ben.pts,
       benGd: ben.gd,
       benGf: ben.gf,
-      benGa: ben.ga
+      benGa: ben.ga,
+      benficaWinsMatch
     });
   }
 
-  // Render jogos relevantes
+  // Render jogos relevantes (exclui Benfica porque está na bolha)
   const gamesBody = document.getElementById("games-body");
   relevantGames.forEach(g => {
     if (g.id === "ben_rmd") return;
